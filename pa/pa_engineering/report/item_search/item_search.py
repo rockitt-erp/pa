@@ -75,13 +75,6 @@ def get_columns():
 			"options": "Brand",
 			"width": 200
 		},
-		{
-			"label": _("Supplier"),
-			"fieldtype": "Link",
-			"fieldname": "supplier",
-			"options": "Supplier",
-			"width": 200
-		},
 	]
 	return columns
 
@@ -111,8 +104,7 @@ def get_data(conditions):
 				bip.price_list_rate * 1.6 as "selling_price_16",
 				bip.price_list_rate * 1.8 as "selling_price_18",
 				bip.price_list_rate * 2.0 as "selling_price_20",
-				i.brand as "brand", 
-				i.default_supplier as "supplier"
+				i.brand as "brand"
 			FROM `tabItem` i
 				LEFT JOIN `tabItem Price` bip ON
 					bip.item_code = i.item_code AND 
@@ -125,3 +117,14 @@ def get_data(conditions):
 	
 	data = frappe.db.sql(sql_query, as_list=True)
 	return data
+
+"""
+i.default_supplier as "supplier"
+{
+	"label": _("Supplier"),
+	"fieldtype": "Link",
+	"fieldname": "supplier",
+	"options": "Supplier",
+	"width": 200
+},
+"""
