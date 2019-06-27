@@ -116,7 +116,7 @@ def get_conditions(filters):
 			arguments.append(segment)
 		
 		item_name_conditon = " OR ".join(item_name_clauses)
-		conditions.append(item_code_condition)
+		conditions.append(item_name_conditon)
 	
 	"TODO: Item Group"
 
