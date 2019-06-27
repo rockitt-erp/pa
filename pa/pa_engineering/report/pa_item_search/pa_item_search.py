@@ -98,7 +98,7 @@ def get_conditions(filters):
 
 		item_code_clauses = []
 		for segment in segments:
-			clause = "i.item_code COLLATE UTF8_GENERAL_CI LIKE %s"
+			clause = "LOWER(i.item_code) LIKE LOWER(%s)"
 			item_code_clauses.append(clause)
 			arguments.append(segment)
 
@@ -111,7 +111,7 @@ def get_conditions(filters):
 
 		item_name_clauses = []
 		for segment in segments:
-			clause = "i.item_name COLLATE UTF8_GENERAL_CI LIKE %s"
+			clause = "LOWER(i.item_name) LIKE LOWER(%s)"
 			item_name_clauses.append(clause)
 			arguments.append(segment)
 		
