@@ -6,9 +6,9 @@ import frappe
 from frappe import _
 
 def execute(filters=None):
-	filters = get_filters(frappe._dict(filters or {}))
+	conditions = get_conditions(frappe._dict(filters or {}))
 	columns = get_columns()
-	data = get_data(filters)
+	data = get_data(conditions)
 	return columns, data
 
 def get_columns():
@@ -75,23 +75,61 @@ def get_columns():
 			"options": "Brand",
 			"width": 200
 		},
+		{
+			"label": _("Supplier"),
+			"fieldtype": "Link",
+			"fieldname": "supplier",
+			"options": "Supplier",
+			"width": 200
+		},
 	]
 	return columns
 
 def surround_wildcard(str):
 	return "%" + str + "%"
 
-def get_filters(filters):
+def get_conditions(filters):
 	conditions = []
+	arguments = []
 
-	"""if filters.item_code:
+	if filters.item_code:
 		item_code = filters.item_code
-		segments = item_code.split(" ")
-		wildly = map(surround_wildcard, segments)
-		wildcards = "".join(segmeents)
-		conditions.append("i.item_code COLLATE UTF8_GENERAL_CI LIKE ")"""
+		segments = map(surround_wildcard, item_code.split(" "))
 
-	return conditions
+		item_code_clauses = []
+		for segment in segments:
+			clause = "i.item_code COLLATE UTF8_GENERAL_CI LIKE %s"
+			item_code_clauses.append(clause)
+			arguments.append(segment)
+
+		item_code_condition = " OR ".join(item_code_clauses)
+		conditions.append(item_code_condition)
+
+	if filters.item_name:
+		item_name = filters.item_name
+		segments = map(surround_wildcard, item_name.split(" "))
+
+		item_name_clauses = []
+		for segment in segments:
+			clause = "i.item_name COLLATE UTF8_GENERAL_CI LIKE %s"
+			item_name_clauses.append(clause)
+			arguments.append(segment)
+		
+		item_name_conditon = " OR ".join(item_name_clauses)
+		conditions.append(item_code_condition)
+	
+	"TODO: Item Group"
+
+	if filters.brand:
+		conditions.append("i.brand = %s")
+		arguments.append(filters.brand)
+
+	if filters.supplier:
+		conditions.append("i.default_supplier = %s")
+		arguments.append(filters.supplier)
+
+	condition = " AND ".join(conditions)
+	return (condition, arguments)
 
 def get_data(conditions):
 	sql_query = 	"""
@@ -104,7 +142,8 @@ def get_data(conditions):
 				bip.price_list_rate * 1.6 as "selling_price_16",
 				bip.price_list_rate * 1.8 as "selling_price_18",
 				bip.price_list_rate * 2.0 as "selling_price_20",
-				i.brand as "brand"
+				i.brand as "brand",
+				i.default_supplier as "supplier"
 			FROM `tabItem` i
 				LEFT JOIN `tabItem Price` bip ON
 					bip.item_code = i.item_code AND 
@@ -112,19 +151,12 @@ def get_data(conditions):
 				LEFT JOIN `tabItem Price` sip ON
 					sip.item_code = i.item_code AND 
 					sip.price_list = 'Standard Selling'
-			LIMIT 1000
 			"""
 	
-	data = frappe.db.sql(sql_query, as_list=True)
-	return data
+	condition, arguments = conditions
 
-"""
-i.default_supplier as "supplier"
-{
-	"label": _("Supplier"),
-	"fieldtype": "Link",
-	"fieldname": "supplier",
-	"options": "Supplier",
-	"width": 200
-},
-"""
+	if bool(condition):
+		sql_query += "WHERE " + condition
+
+	data = frappe.db.sql(sql_query, *arguments, as_list=True)
+	return data
