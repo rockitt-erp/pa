@@ -101,17 +101,27 @@ def get_filters(filters):
 	return conditions
 
 def get_data(conditions):
-	data = [{"item_code": "a"}]
-
 	sql_query = 	"""
-			SELECT * FROM `tabItem` i
-			LEFT JOIN `tabItem Price` bip ON
-				i.item_code = bip.item_code AND
-				bip.price_list = 'Standard Buying'
-			LEFT JOIN `tabItem Price` sip ON
-				i.item_code = sip.item_code AND
-				sip.price_list = 'Standard Selling'
-			WHERE
+			SELECT 
+				i.item_code as "item_code", 
+				i.item_name as "item_name", 
+				i.item_group as "item_group", 
+				bip.price_list_rate as "buying_price",
+				sip.price_list_rate as "selling_price",
+				bip.price_list_rate * 1.6 as "selling_price_16",
+				bip.price_list_rate * 1.8 as "selling_price_18",
+				bip.price_list_rate * 2.0 as "selling_price_20",
+				i.brand as "brand", 
+				i.default_supplier as "supplier"
+			FROM `tabItem` i
+				LEFT JOIN `tabItem Price` bip ON
+					bip.item_code = i.item_code AND 
+					bip.price_list = 'Standard Buying'
+				LEFT JOIN `tabItem Price` sip ON
+					sip.item_code = i.item_code AND 
+					sip.price_list = 'Standard Selling'
+			LIMIT 1000
 			"""
 	
+	data = frappe.db.sql(sql_query, as_list=True)
 	return data
