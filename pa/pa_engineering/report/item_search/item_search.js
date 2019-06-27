@@ -4,39 +4,39 @@
 
 frappe.query_reports["Item Search"] = {
 	"filters": [
-{
+		{
 			"label": __("Item Code"),
 			"fieldtype": "Data",
 			"fieldname": "item_code",
-    			"options": "Item",
-            		"default": ""
+            "options": "",
+            "default": ""
 		},
 		{
 			"label": __("Item Name"),
 			"fieldtype": "Data",
 			"fieldname": "item_name",
-            		"default": ""
-        	},
+            "default": ""
+        },
 		{
 			"label": __("Item Group"),
 			"fieldtype": "Link",
 			"fieldname": "item_group",
 			"options": "Item Group",
-            		"default": "All Item Groups"
+            "default": "All Item Groups"
 		},
 		{
 			"label": __("Brand"),
 			"fieldtype": "Link",
 			"fieldname": "brand",
 			"options": "Brand",
-            		"default": ""
+            "default": ""
 		},
 		{
 			"label": __("Supplier"),
 			"fieldtype": "Link",
 			"fieldname": "supplier",
 			"options": "Supplier",
-            		"default": ""
-        	}
+            "default": ""
+        }
 	]
 };

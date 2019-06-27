@@ -98,11 +98,12 @@ def get_conditions(filters):
 
 		item_code_clauses = []
 		for segment in segments:
-			clause = "i.item_code COLLATE UTF8_GENERAL_CI LIKE %s"
+			clause = "LOWER(i.item_code) LIKE LOWER(%s)"
 			item_code_clauses.append(clause)
 			arguments.append(segment)
 
 		item_code_condition = " OR ".join(item_code_clauses)
+		item_code_condition = "(" + item_code_condition + ")"
 		conditions.append(item_code_condition)
 
 	if filters.item_name:
@@ -111,12 +112,13 @@ def get_conditions(filters):
 
 		item_name_clauses = []
 		for segment in segments:
-			clause = "i.item_name COLLATE UTF8_GENERAL_CI LIKE %s"
+			clause = "LOWER(i.item_name) LIKE LOWER(%s)"
 			item_name_clauses.append(clause)
 			arguments.append(segment)
 		
-		item_name_conditon = " OR ".join(item_name_clauses)
-		conditions.append(item_code_condition)
+		item_name_conditon = " AND ".join(item_name_clauses)
+		item_name_conditon = "(" + item_name_conditon + ")"
+		conditions.append(item_name_conditon)
 	
 	"TODO: Item Group"
 
@@ -158,5 +160,7 @@ def get_data(conditions):
 	if bool(condition):
 		sql_query += "WHERE " + condition
 
-	data = frappe.db.sql(sql_query, *arguments, as_list=True)
+	sql_query += "\nLIMIT 1000"
+
+	data = frappe.db.sql(sql_query, arguments, as_dict=True)
 	return data

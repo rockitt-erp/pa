@@ -102,7 +102,7 @@ def get_conditions(filters):
 			item_code_clauses.append(clause)
 			arguments.append(segment)
 
-		item_code_condition = " AND ".join(item_code_clauses)
+		item_code_condition = " OR ".join(item_code_clauses)
 		item_code_condition = "(" + item_code_condition + ")"
 		conditions.append(item_code_condition)
 
