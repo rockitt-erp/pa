@@ -103,6 +103,7 @@ def get_conditions(filters):
 			arguments.append(segment)
 
 		item_code_condition = " OR ".join(item_code_clauses)
+		item_code_condition = "(" + item_code_condition + ")"
 		conditions.append(item_code_condition)
 
 	if filters.item_name:
@@ -116,6 +117,7 @@ def get_conditions(filters):
 			arguments.append(segment)
 		
 		item_name_conditon = " OR ".join(item_name_clauses)
+		item_name_conditon = "(" + item_name_conditon + ")"
 		conditions.append(item_name_conditon)
 	
 	"TODO: Item Group"
@@ -158,5 +160,7 @@ def get_data(conditions):
 	if bool(condition):
 		sql_query += "WHERE " + condition
 
-	data = frappe.db.sql(sql_query, *arguments, as_list=True)
+	sql_query += "\nLIMIT 1000"
+
+	data = frappe.db.sql(sql_query, arguments, as_dict=True)
 	return data
