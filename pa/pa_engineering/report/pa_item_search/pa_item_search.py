@@ -120,8 +120,10 @@ def get_conditions(filters):
 		item_name_conditon = "(" + item_name_conditon + ")"
 		conditions.append(item_name_conditon)
 	
-	"TODO: Item Group"
-
+	if filters.item_group:
+		conditions.append("i.item_group = %s")
+		arguments.append(filters.item_group)
+		
 	if filters.brand:
 		conditions.append("i.brand = %s")
 		arguments.append(filters.brand)

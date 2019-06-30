@@ -41,7 +41,7 @@ def get_columns():
 			"width": 200
 		},
 		{
-			"label": _("Selling Price"),
+			"label": _("RRP"),
 			"fieldtype": "Currency",
 			"fieldname": "selling_price",
 			"options": "AUD",
@@ -120,7 +120,9 @@ def get_conditions(filters):
 		item_name_conditon = "(" + item_name_conditon + ")"
 		conditions.append(item_name_conditon)
 	
-	"TODO: Item Group"
+	if filters.item_group:
+		conditions.append("i.item_group = %s")
+		arguments.append(filters.item_group)
 
 	if filters.brand:
 		conditions.append("i.brand = %s")

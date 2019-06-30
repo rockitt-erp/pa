@@ -22,7 +22,7 @@ frappe.query_reports["Item Search"] = {
 			"fieldtype": "Link",
 			"fieldname": "item_group",
 			"options": "Item Group",
-            "default": "All Item Groups"
+            "default": ""
 		},
 		{
 			"label": __("Brand"),
