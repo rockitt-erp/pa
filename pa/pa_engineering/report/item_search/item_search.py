@@ -27,10 +27,10 @@ def get_columns():
 			"width": 200
 		},
 		{
-			"label": _("Item Group"),
+			"label": _("Brand"),
 			"fieldtype": "Link",
-			"fieldname": "item_group",
-			"options": "Item Group",
+			"fieldname": "brand",
+			"options": "Brand",
 			"width": 200
 		},
 		{
@@ -68,11 +68,11 @@ def get_columns():
 			"options": "AUD",
 			"width": 200
 		},
-				{
-			"label": _("Brand"),
+		{
+			"label": _("Item Group"),
 			"fieldtype": "Link",
-			"fieldname": "brand",
-			"options": "Brand",
+			"fieldname": "item_group",
+			"options": "Item Group",
 			"width": 200
 		},
 		{
